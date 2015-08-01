@@ -5,9 +5,14 @@
 			"path": ".",
 			"folder_exclude_patterns":
 			[
-				"bin",
+				// "bin",
 				"node_modules"
 			]
 		}
-	]
+	],
+	"settings":
+	{
+		"tab_size": 2,
+		"translate_tabs_to_spaces": true
+	}
 }

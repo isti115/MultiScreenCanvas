@@ -5,6 +5,8 @@
  */
 
 var app = require('../app');
+var wsmodule = require('../wsmodule');
+var main = require('../main');
 var debug = require('debug')('MultiScreenCanvas:server');
 var http = require('http');
 
@@ -28,6 +30,9 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+wsmodule.init(server);
+main.init(wsmodule);
 
 /**
  * Normalize a port into a number, string, or false.
