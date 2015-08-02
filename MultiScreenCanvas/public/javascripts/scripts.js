@@ -2,19 +2,27 @@
 
 window.addEventListener('load', init, false);
 
-var data = {};
+var params = {};
 
 var canvas, context;
 var area;
 
 function init() {
+  if (location.hash == "") {
+    location.hash = "#0;0@0";
+  }
+  
   var raw = location.hash.substr(1);
   
   var splitted = raw.split('@');
-  data.position = splitted[0].split(';');
-  data.zoom = splitted[1];
+  params.zoom = parseInt(splitted[1]);
+  splitted = splitted[0].split(';');
   
-  console.log(JSON.stringify(data));
+  params.position = {};
+  params.position.x = parseInt(splitted[0]);
+  params.position.y = parseInt(splitted[1]);
+  
+  // console.log(JSON.stringify(params));
   
   canvas = document.getElementById('canvas');
   context = canvas.getContext('2d');
@@ -27,18 +35,20 @@ function init() {
   var centerX = canvas.width / 2;
   var centerY = canvas.height / 2;
   
-  context.translate(data.position[0], data.position[1]);
+  // context.translate(params.position[0], params.position[1]);
   
   // test();
+  
+  window.addEventListener('keydown', keyPress, false);
 }
 
 function execute(data) {
-  context.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
   
   var pos = data.pos;
   
   context.beginPath();
-  context.arc(pos.x, pos.y, 70, 0, 2 * Math.PI, false);
+  context.arc(pos.x + params.position.x, pos.y + params.position.y, 70, 0, 2 * Math.PI, false);
   context.fillStyle = 'green';
   context.fill();
   context.lineWidth = 5;
@@ -65,6 +75,19 @@ function test() {
   context.stroke();
 }
 
-canvas.addEventListener("keydown", function() {
+function keyPress(e) {
+  if (e.keyCode == 38) {
+    params.position.y -= e.shiftKey ? 15 : 1;
+  }
+  else if (e.keyCode == 40) {
+    params.position.y += e.shiftKey ? 15 : 1;
+  }
+  else if (e.keyCode == 37) {
+    params.position.x -= e.shiftKey ? 15 : 1;
+  }
+  else if (e.keyCode == 39) {
+    params.position.x += e.shiftKey ? 15 : 1;
+  }
   
-}, false);
+  location.hash = '#' + params.position.x + ';' + params.position.y + '@' + params.zoom;
+}
